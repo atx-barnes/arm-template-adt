@@ -18,7 +18,7 @@ var funcAppName = '${projectName}funcapp${unique}'
 var appInightsName = '${projectName}appinsight${unique}'
 var eventGridIngestName =  '${projectName}egingest${unique}'
 var eventGridCLTopicName = '${projectName}clt${unique}'
-var fileContainerName =  'bladeremoteassets'
+var fileContainerName =  'remoteassets'
 var ingestFuncName = 'telemetryfunction'
 
 var identityName = '${projectName}scriptidentity'
@@ -231,34 +231,6 @@ resource eventGridChangeLogTopic 'Microsoft.EventGrid/topics@2020-10-15-preview'
   }
 }
 
-resource eventGrid_IoTHubIngest 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2020-04-01-preview' = {
-  name: '${eventGridIngestTopic.name}/${ingestFuncName}'
-  properties: {
-    destination: {
-      endpointType: 'AzureFunction'
-      properties: {
-        resourceId: '${funcApp.id}/functions/${ingestFuncName}'
-        maxEventsPerBatch: 1
-        preferredBatchSizeInKilobytes: 64
-      }
-    }
-    eventDeliverySchema: 'EventGridSchema'
-    filter: {
-      includedEventTypes: [
-        'Microsoft.Devices.DeviceTelemetry'
-      ]
-    }
-  }
-  dependsOn: [
-    eventGridIngestTopic
-    iot
-    ingestfunction
-    funcApp
-    signalr
-    PostDeploymentscript
-  ]
-}
-
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: identityName
   location: location
@@ -342,7 +314,7 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     forceUpdateTag: utcValue
     azCliVersion: '2.15.0'
     arguments: '${iot.name} ${adt.name} ${resourceGroup().name} ${location} ${eventGridChangeLogTopic.name} ${eventGridChangeLogTopic.id} ${funcApp.id} ${storage.name} ${fileContainerName}'
-    primaryScriptUri: 'https://raw.githubusercontent.com/MicrosoftDocs/mslearn-mr-adt-in-unity/main/ARM-Template/postdeploy.sh'
+    primaryScriptUri: 'https://github.com/atx-barnes/arm-template-adt/raw/main/postdeploy.sh'
     supportingScriptUris: []
     timeout: 'PT30M'
     cleanupPreference: 'OnExpiration'

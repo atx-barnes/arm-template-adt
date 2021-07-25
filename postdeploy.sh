@@ -26,7 +26,7 @@ az config set extension.use_dynamic_install=yes_without_prompt
 az extension add --name azure-iot -y
 
 # echo 'retrieve files'
-git clone https://github.com/adamlash/blade-infra.git
+git clone https://github.com/atx-barnes/arm-template-adt
 
 # az eventgrid topic create -g $rgname --name $egname -l $location
 az dt endpoint create eventgrid --dt-name $adtname --eventgrid-resource-group $rgname --eventgrid-topic $egname --endpoint-name "$egname-ep"
@@ -36,4 +36,4 @@ az dt route create --dt-name $adtname --endpoint-name "$egname-ep" --route-name 
 az eventgrid event-subscription create --name "$egname-broadcast-sub" --source-resource-id $egid --endpoint "$funcappid/functions/broadcast" --endpoint-type azurefunction
 
 # Retrieve and Upload models to blob storage
-az storage blob upload-batch --account-name $storagename -d $containername -s "./ARMTemplateADT/Assets"
+az storage blob upload-batch --account-name $storagename -d $containername -s "./arm-template-adt/Assets"
